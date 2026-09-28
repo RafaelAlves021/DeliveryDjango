@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meu Carrinho</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen pb-16">
+
+    <header class="bg-red-600 text-white shadow-md">
+        <div class="max-w-3xl mx-auto px-4 py-4 flex justify-between items-center">
+            <h1 class="text-xl font-bold">🛒 Resumo do Pedido</h1>
+            <a href="{% url 'cardapio' %}" class="text-sm bg-red-700 hover:bg-red-800 px-3 py-1.5 rounded-lg transition">
+                ← Continuar comprando
+            </a>
+        </div>
+    </header>
+
+    <main class="max-w-3xl mx-auto px-4 mt-6">
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            {% if carrinho %}
+                <ul class="divide-y divide-gray-100">
+                    {% for item in carrinho %}
+                        <li class="py-4 flex justify-between items-center">
+                            <div>
+                                <h3 class="font-bold text-gray-900 text-base">{{ item.produto.nome }}</h3>
+                                <p class="text-sm text-gray-500">{{ item.quantidade }}x R$ {{ item.preco }}</p>
+                            </div>
+                            <div class="flex items-center gap-4">
+                                <span class="font-bold text-gray-800">R$ {{ item.subtotal }}</span>
+                                <a href="{% url 'remover_carrinho' item.produto.id %}" class="text-red-500 hover:text-red-700 text-sm font-semibold">
+                                    Remover
+                                </a>
+                            </div>
+                        </li>
+                    {% endfor %}
+                </ul>
+
+                <div class="border-t border-gray-200 mt-6 pt-4 flex justify-between items-center">
+                    <span class="text-lg font-bold text-gray-800">Total:</span>
+                    <span class="text-2xl font-extrabold text-red-600">R$ {{ carrinho.get_total_preco }}</span>
+                </div>
+
+                <div class="mt-6">
+                    <button class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-xl shadow-md transition text-center block">
+                        Avançar para Entrega
+                    </button>
+                </div>
+            {% else %}
+                <div class="text-center py-10">
+                    <p class="text-gray-500 text-lg">O seu carrinho está vazio.</p>
+                    <a href="{% url 'cardapio' %}" class="mt-4 inline-block bg-red-600 text-white font-semibold px-4 py-2 rounded-lg hover:bg-red-700 transition">
+                        Ver Cardápio
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </main>
+
+</body>
+</html>

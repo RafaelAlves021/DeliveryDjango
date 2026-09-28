@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cardápio Digital</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen pb-28">
+
+    <!-- Cabeçalho -->
+    <header class="bg-red-600 text-white shadow-md">
+        <div class="max-w-4xl mx-auto px-4 py-6 text-center">
+            <h1 class="text-3xl font-extrabold tracking-wide">🍔 Nosso Delivery</h1>
+            <p class="text-red-100 text-sm mt-1">Faça seu pedido online de forma rápida!</p>
+        </div>
+    </header>
+
+    <!-- Barra Flutuante do Carrinho (surge se houver itens adicionados) -->
+    {% if carrinho|length > 0 %}
+    <div class="fixed bottom-4 left-0 right-0 max-w-md mx-auto px-4 z-50">
+        <a href="{% url 'ver_carrinho' %}" class="bg-gray-900 text-white flex justify-between items-center px-5 py-3.5 rounded-full shadow-2xl hover:bg-black transition">
+            <div class="flex items-center gap-2">
+                <span class="bg-red-600 text-white text-xs font-bold px-2 py-0.5 rounded-full">{{ carrinho|length }}</span>
+                <span class="font-bold text-sm">Ver Pedido</span>
+            </div>
+            <span class="font-semibold text-sm">R$ {{ carrinho.get_total_preco }}</span>
+        </a>
+    </div>
+    {% endif %}
+
+    <!-- Conteúdo do Cardápio -->
+    <main class="max-w-4xl mx-auto px-4 mt-8 space-y-10">
+        {% for categoria in categorias %}
+            {% if categoria.produtos.exists %}
+                <section>
+                    <h2 class="text-2xl font-bold text-gray-800 border-b-2 border-red-500 pb-2 mb-4">
+                        {{ categoria.nome }}
+                    </h2>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {% for produto in categoria.produtos.all %}
+                            {% if produto.disponivel %}
+                                <div class="bg-white rounded-xl shadow-sm p-4 flex gap-4 border border-gray-200 hover:shadow-md transition">
+                                    {% if produto.imagem %}
+                                        <img src="{{ produto.imagem.url }}" alt="{{ produto.nome }}" class="w-24 h-24 object-cover rounded-lg flex-shrink-0">
+                                    {% else %}
+                                        <div class="w-24 h-24 bg-gray-200 rounded-lg flex items-center justify-center text-gray-400 text-xs flex-shrink-0">
+                                            Sem foto
+                                        </div>
+                                    {% endif %}
+                                    
+                                    <div class="flex flex-col justify-between flex-grow">
+                                        <div>
+                                            <h3 class="font-bold text-gray-900 text-base">{{ produto.nome }}</h3>
+                                            <p class="text-xs text-gray-500 mt-1 line-clamp-2">{{ produto.descricao }}</p>
+                                        </div>
+                                        <div class="flex items-center justify-between mt-3">
+                                            <span class="font-extrabold text-red-600 text-base">R$ {{ produto.preco }}</span>
+                                            <a href="{% url 'adicionar_carrinho' produto.id %}" class="bg-red-600 hover:bg-red-700 text-white text-xs font-semibold px-3 py-1.5 rounded-lg shadow transition">
+                                                Adicionar
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </section>
+            {% endif %}
+        {% empty %}
+            <div class="text-center text-gray-500 py-12">
+                Nenhum produto cadastrado no momento.
+            </div>
+        {% endfor %}
+    </main>
+
+</body>
+</html>
