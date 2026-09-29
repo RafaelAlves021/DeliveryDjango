@@ -1,79 +1,118 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cardápio Digital</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-gray-100 min-h-screen pb-28">
+{% extends 'delivery/base.html' %}
 
-    <!-- Cabeçalho -->
-    <header class="bg-red-600 text-white shadow-md">
-        <div class="max-w-4xl mx-auto px-4 py-6 text-center">
-            <h1 class="text-3xl font-extrabold tracking-wide">🍔 Nosso Delivery</h1>
-            <p class="text-red-100 text-sm mt-1">Faça seu pedido online de forma rápida!</p>
-        </div>
-    </header>
+{% block title %}Cardápio Digital | Burguer & Co.{% endblock %}
 
-    <!-- Barra Flutuante do Carrinho (surge se houver itens adicionados) -->
-    {% if carrinho|length > 0 %}
-    <div class="fixed bottom-4 left-0 right-0 max-w-md mx-auto px-4 z-50">
-        <a href="{% url 'ver_carrinho' %}" class="bg-gray-900 text-white flex justify-between items-center px-5 py-3.5 rounded-full shadow-2xl hover:bg-black transition">
-            <div class="flex items-center gap-2">
-                <span class="bg-red-600 text-white text-xs font-bold px-2 py-0.5 rounded-full">{{ carrinho|length }}</span>
-                <span class="font-bold text-sm">Ver Pedido</span>
+{% block content %}
+<div class="container" style="max-width: 900px;">
+
+    <!-- Banner Restaurante -->
+    <div class="card border-0 text-white rounded-4 shadow-sm mb-4 overflow-hidden" style="background: linear-gradient(135deg, #18181b 0%, #09090b 100%);">
+        <div class="card-body p-4 p-md-5">
+            <div class="d-flex flex-column flex-sm-row align-items-center gap-4 text-center text-sm-start">
+                <div class="bg-danger text-white rounded-4 d-flex align-items-center justify-content-center shadow-lg" style="width: 80px; height: 80px; font-size: 2.5rem; flex-shrink: 0;">
+                    🍔
+                </div>
+                <div>
+                    <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-sm-start gap-2 mb-2">
+                        <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-3 py-1">
+                            ● Aberto agora
+                        </span>
+                        <span class="text-secondary small">Entrega: 30 - 45 min</span>
+                    </div>
+                    <h1 class="h2 fw-extrabold mb-1 tracking-tight">Burguer & Co. Delivery</h1>
+                    <p class="text-secondary small mb-0">Hambúrgueres grelhados no fogo, batatas crocantes e bebidas bem geladas.</p>
+                </div>
             </div>
-            <span class="font-semibold text-sm">R$ {{ carrinho.get_total_preco }}</span>
-        </a>
+        </div>
     </div>
-    {% endif %}
 
-    <!-- Conteúdo do Cardápio -->
-    <main class="max-w-4xl mx-auto px-4 mt-8 space-y-10">
+    <!-- Navegação Rápida de Categorias -->
+    <div class="d-flex gap-2 overflow-auto pb-2 mb-4" style="scrollbar-width: none;">
         {% for categoria in categorias %}
             {% if categoria.produtos.exists %}
-                <section>
-                    <h2 class="text-2xl font-bold text-gray-800 border-b-2 border-red-500 pb-2 mb-4">
-                        {{ categoria.nome }}
-                    </h2>
-                    
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {% for produto in categoria.produtos.all %}
-                            {% if produto.disponivel %}
-                                <div class="bg-white rounded-xl shadow-sm p-4 flex gap-4 border border-gray-200 hover:shadow-md transition">
-                                    {% if produto.imagem %}
-                                        <img src="{{ produto.imagem.url }}" alt="{{ produto.nome }}" class="w-24 h-24 object-cover rounded-lg flex-shrink-0">
-                                    {% else %}
-                                        <div class="w-24 h-24 bg-gray-200 rounded-lg flex items-center justify-center text-gray-400 text-xs flex-shrink-0">
-                                            Sem foto
+                <a href="#cat-{{ categoria.id }}" class="badge-pill-cat">
+                    {{ categoria.nome }}
+                </a>
+            {% endif %}
+        {% endfor %}
+    </div>
+
+    <!-- Listagem por Categorias -->
+    {% for categoria in categorias %}
+        {% if categoria.produtos.exists %}
+            <section id="cat-{{ categoria.id }}" class="mb-5" style="scroll-margin-top: 85px;">
+                <div class="d-flex align-items-center gap-2 pb-2 mb-3 border-bottom border-2 border-danger-subtle">
+                    <h3 class="h4 fw-bold mb-0 text-dark">{{ categoria.nome }}</h3>
+                    <span class="badge bg-dark rounded-pill">{{ categoria.produtos.count }}</span>
+                </div>
+
+                <div class="row g-3">
+                    {% for produto in categoria.produtos.all %}
+                        {% if produto.disponivel %}
+                            <div class="col-12 col-md-6">
+                                <div class="card h-100 border-0 shadow-sm rounded-4 p-3 bg-white">
+                                    <div class="d-flex gap-3 align-items-center">
+                                        
+                                        <!-- Imagem -->
+                                        <a href="{% url 'produto_detalhe' produto.id %}" class="flex-shrink-0">
+                                            {% if produto.imagem %}
+                                                <img src="{{ produto.imagem.url }}" class="rounded-3 object-fit-cover shadow-sm" style="width: 95px; height: 95px;" alt="{{ produto.nome }}">
+                                            {% else %}
+                                                <div class="bg-light rounded-3 d-flex align-items-center justify-content-center text-muted border" style="width: 95px; height: 95px;">
+                                                    <span style="font-size: 1.5rem;">🍽️</span>
+                                                </div>
+                                            {% endif %}
+                                        </a>
+
+                                        <!-- Detalhes do Produto (com overflow-hidden para não vazar texto) -->
+                                        <div class="flex-grow-1 overflow-hidden">
+                                            <h5 class="fw-bold mb-1 fs-6 text-truncate">
+                                                <a href="{% url 'produto_detalhe' produto.id %}" class="text-decoration-none text-dark">
+                                                    {{ produto.nome }}
+                                                </a>
+                                            </h5>
+                                            
+                                            <!-- Descrição com quebra suave e limite de 2 linhas -->
+                                            <p class="text-muted small mb-2 line-clamp-2" style="font-size: 0.8rem; line-height: 1.35;">
+                                                {{ produto.descricao|default:"Sem descrição detalhada." }}
+                                            </p>
+
+                                            <div class="d-flex justify-content-between align-items-center pt-1 border-top border-light">
+                                                <span class="fw-extrabold fs-6 text-dark">R$ {{ produto.preco }}</span>
+                                                <a href="{% url 'adicionar_carrinho' produto.id %}" class="btn btn-sm btn-brand px-3 py-1">
+                                                    + Pedir
+                                                </a>
+                                            </div>
                                         </div>
-                                    {% endif %}
-                                    
-                                    <div class="flex flex-col justify-between flex-grow">
-                                        <div>
-                                            <h3 class="font-bold text-gray-900 text-base">{{ produto.nome }}</h3>
-                                            <p class="text-xs text-gray-500 mt-1 line-clamp-2">{{ produto.descricao }}</p>
-                                        </div>
-                                        <div class="flex items-center justify-between mt-3">
-                                            <span class="font-extrabold text-red-600 text-base">R$ {{ produto.preco }}</span>
-                                            <a href="{% url 'adicionar_carrinho' produto.id %}" class="bg-red-600 hover:bg-red-700 text-white text-xs font-semibold px-3 py-1.5 rounded-lg shadow transition">
-                                                Adicionar
-                                            </a>
-                                        </div>
+
                                     </div>
                                 </div>
-                            {% endif %}
-                        {% endfor %}
-                    </div>
-                </section>
-            {% endif %}
-        {% empty %}
-            <div class="text-center text-gray-500 py-12">
-                Nenhum produto cadastrado no momento.
-            </div>
-        {% endfor %}
-    </main>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </section>
+        {% endif %}
+    {% empty %}
+        <div class="card border-0 shadow-sm rounded-4 text-center p-5 bg-white">
+            <span class="fs-1 d-block mb-2">📋</span>
+            <h5 class="fw-bold">Nenhum produto disponível</h5>
+            <p class="text-muted small">O cardápio está sendo atualizado.</p>
+        </div>
+    {% endfor %}
 
-</body>
-</html>
+    <!-- Barra Flutuante do Carrinho -->
+    {% if carrinho|length > 0 %}
+        <div class="fixed-bottom p-3 d-flex justify-content-center" style="z-index: 1050;">
+            <a href="{% url 'ver_carrinho' %}" class="btn btn-dark shadow-lg d-flex justify-content-between align-items-center px-4 py-3 rounded-pill text-decoration-none border border-secondary" style="min-width: 330px; max-width: 420px; width: 100%;">
+                <div class="d-flex align-items-center gap-2">
+                    <span class="badge bg-danger rounded-pill px-2 py-1">{{ carrinho|length }}</span>
+                    <span class="fw-bold small text-white">Ver meu pedido</span>
+                </div>
+                <span class="fw-bold text-white fs-6">R$ {{ carrinho.get_total_preco }} →</span>
+            </a>
+        </div>
+    {% endif %}
+
+</div>
+{% endblock %}

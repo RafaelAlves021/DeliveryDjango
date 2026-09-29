@@ -5,7 +5,8 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('delivery.urls')),  # Conecta a página inicial ao app de delivery
+    path('accounts/', include('django.contrib.auth.urls')),  # <-- Rotas nativas de login/logout
+    path('', include('delivery.urls')),
 ]
 
 if settings.DEBUG:

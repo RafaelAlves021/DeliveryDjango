@@ -132,3 +132,6 @@ import os
 # Configuração para arquivos estáticos e de upload (fotos dos produtos)
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'

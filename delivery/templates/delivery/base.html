@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Burguer & Co. Delivery{% endblock %}</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Fonte Plus Jakarta Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #f4f4f5;
+            color: #18181b;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            -webkit-font-smoothing: antialiased;
+        }
+        main { flex: 1; }
+        .navbar-custom {
+            background-color: rgba(18, 18, 20, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .btn-brand {
+            background-color: #dc2626;
+            color: #fff;
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
+            transition: all 0.2s ease;
+        }
+        .btn-brand:hover {
+            background-color: #b91c1c;
+            color: #fff;
+            transform: translateY(-1px);
+        }
+        .badge-pill-cat {
+            background-color: #ffffff;
+            color: #27272a;
+            border: 1px solid #e4e4e7;
+            border-radius: 50rem;
+            padding: 0.45rem 1.1rem;
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+            white-space: nowrap;
+        }
+        .badge-pill-cat:hover {
+            background-color: #18181b;
+            color: #ffffff;
+            border-color: #18181b;
+        }
+        /* Limita a exibição em até 2 linhas e adiciona reticências */
+        .line-clamp-2 {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Menu Superior Global (Navbar Bootstrap) -->
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-custom sticky-top py-3">
+        <div class="container" style="max-width: 900px;">
+            <a class="navbar-brand fw-extrabold d-flex align-items-center gap-2" href="{% url 'cardapio' %}">
+                <span class="fs-4">🍔</span>
+                <span class="text-white fw-bold tracking-tight">Burguer & Co.</span>
+            </a>
+            
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarDelivery">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarDelivery">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-3 gap-1">
+                    <li class="nav-item">
+                        <a class="nav-link text-zinc-300 small fw-semibold" href="{% url 'cardapio' %}">Cardápio</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-zinc-300 small fw-semibold" href="{% url 'ver_carrinho' %}">Carrinho</a>
+                    </li>
+                </ul>
+
+                <!-- Sessão / Autenticação -->
+                <div class="d-flex align-items-center gap-2 mt-2 mt-lg-0">
+                    {% if user.is_authenticated %}
+                        <span class="text-light small me-2">Olá, <strong>{{ user.username }}</strong></span>
+                        <a href="{% url 'produto_criar' %}" class="btn btn-sm btn-danger fw-bold rounded-pill px-3">
+                            + Novo Produto
+                        </a>
+                        <form method="post" action="{% url 'logout' %}" class="d-inline m-0">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-sm btn-outline-light rounded-pill px-3">
+                                Sair
+                            </button>
+                        </form>
+                    {% else %}
+                        <a href="{% url 'login' %}" class="btn btn-sm btn-outline-light rounded-pill px-3">
+                            🔐 Área do Dono
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Conteúdo Dinâmico -->
+    <main class="py-4">
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <!-- Rodapé Global -->
+    <footer class="bg-black text-secondary py-4 mt-auto border-top border-dark">
+        <div class="container text-center" style="max-width: 900px;">
+            <p class="mb-1 text-white fw-bold small">Burguer & Co. Delivery</p>
+            <small class="text-muted d-block">&copy; 2026 Todos os direitos reservados • Desenvolvido com Django & Bootstrap</small>
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pedido Confirmado</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center p-4">
+
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-8 max-w-md w-full text-center">
+        <div class="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl font-bold">
+            ✓
+        </div>
+        <h1 class="text-2xl font-extrabold text-gray-900 mb-1">Pedido Recebido!</h1>
+        <p class="text-gray-500 text-sm mb-6">Obrigado, <strong class="text-gray-800">{{ pedido.cliente_nome }}</strong>. O teu pedido já está registado.</p>
+
+        <div class="bg-gray-50 rounded-xl p-4 text-left border border-gray-100 mb-6 text-sm space-y-2">
+            <div class="flex justify-between">
+                <span class="text-gray-500">Número do Pedido:</span>
+                <span class="font-bold text-gray-800">#{{ pedido.id }}</span>
+            </div>
+            <div class="flex justify-between">
+                <span class="text-gray-500">Telefone:</span>
+                <span class="font-medium text-gray-800">{{ pedido.cliente_telefone }}</span>
+            </div>
+            <div class="flex justify-between">
+                <span class="text-gray-500">Morada:</span>
+                <span class="font-medium text-gray-800 text-right">{{ pedido.endereco_entrega }}</span>
+            </div>
+            <div class="flex justify-between border-t border-gray-200 pt-2 mt-2">
+                <span class="font-bold text-gray-800">Total:</span>
+                <span class="font-extrabold text-red-600 text-base">R$ {{ pedido.total }}</span>
+            </div>
+        </div>
+
+        <a href="{% url 'cardapio' %}" class="block w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-3 rounded-xl transition shadow">
+            Voltar ao Cardápio
+        </a>
+    </div>
+
+</body>
+</html>

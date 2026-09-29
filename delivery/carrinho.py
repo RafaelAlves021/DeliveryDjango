@@ -16,6 +16,14 @@ class Carrinho:
         self.carrinho[produto_id]['quantidade'] += 1
         self.salvar()
 
+    def diminuir(self, produto_id):
+        produto_id = str(produto_id)
+        if produto_id in self.carrinho:
+            self.carrinho[produto_id]['quantidade'] -= 1
+            if self.carrinho[produto_id]['quantidade'] <= 0:
+                del self.carrinho[produto_id]
+            self.salvar()
+
     def remover(self, produto_id):
         produto_id = str(produto_id)
         if produto_id in self.carrinho:

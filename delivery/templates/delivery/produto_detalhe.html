@@ -1,0 +1,43 @@
+{% extends 'delivery/base.html' %}
+
+{% block title %}{{ produto.nome }} | Detalhes{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width: 720px;">
+    <div class="card shadow-sm border-0 overflow-hidden">
+        {% if produto.imagem %}
+            <img src="{{ produto.imagem.url }}" class="card-img-top w-100 object-fit-cover" style="max-height: 380px;" alt="{{ produto.nome }}">
+        {% endif %}
+
+        <div class="card-body p-4">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <span class="badge bg-dark">{{ produto.categoria.nome }}</span>
+                <span class="fs-3 fw-bold text-danger">R$ {{ produto.preco }}</span>
+            </div>
+
+            <h2 class="card-title fw-bold text-dark">{{ produto.nome }}</h2>
+            <hr>
+            <h6 class="text-uppercase text-muted fw-bold small">Descrição do Item</h6>
+            <p class="card-text text-secondary">{{ produto.descricao|default:"Sem descrição detalhada." }}</p>
+
+            <div class="d-grid gap-2 mt-4">
+                <a href="{% url 'adicionar_carrinho' produto.id %}" class="btn btn-danger btn-lg fw-bold">
+                    Adicionar ao Carrinho (+ R$ {{ produto.preco }})
+                </a>
+
+                <!-- Botões CRUD com Visibilidade Condicional Exigida -->
+                {% if user.is_authenticated %}
+                    <div class="d-flex gap-2 mt-2">
+                        <a href="{% url 'produto_editar' produto.id %}" class="btn btn-outline-secondary w-50">
+                            ✏️ Editar Produto
+                        </a>
+                        <a href="{% url 'produto_excluir' produto.id %}" class="btn btn-outline-danger w-50">
+                            🗑️ Excluir Produto
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
