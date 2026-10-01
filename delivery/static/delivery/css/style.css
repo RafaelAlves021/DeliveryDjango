@@ -1,0 +1,92 @@
+:root {
+    --brand-red: #ea1d2c;
+    --brand-red-hover: #c91825;
+    --card-border: rgba(0, 0, 0, 0.06);
+}
+
+body {
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    background-color: #f7f7f8;
+    color: #19191c;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    -webkit-font-smoothing: antialiased;
+}
+
+main { 
+    flex: 1; 
+}
+
+/* Barra de navegação */
+.navbar-custom {
+    background: rgba(18, 18, 22, 0.95);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Botão Vermelho Delivery */
+.btn-brand {
+    background-color: var(--brand-red);
+    color: #ffffff;
+    border: none;
+    border-radius: 12px;
+    font-weight: 700;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btn-brand:hover {
+    background-color: var(--brand-red-hover);
+    color: #ffffff;
+    transform: scale(1.02);
+    box-shadow: 0 4px 14px rgba(234, 29, 44, 0.3);
+}
+
+.btn-brand:active {
+    transform: scale(0.98);
+}
+
+/* Pills de Categorias */
+.badge-pill-cat {
+    background-color: #ffffff;
+    color: #3f3f46;
+    border: 1px solid #e4e4e7;
+    border-radius: 9999px;
+    padding: 0.5rem 1.2rem;
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+    display: inline-block;
+}
+
+.badge-pill-cat:hover {
+    background-color: #18181b;
+    color: #ffffff;
+    border-color: #18181b;
+    transform: translateY(-1px);
+}
+
+/* Cards de Produtos */
+.card-produto {
+    border: 1px solid var(--card-border);
+    border-radius: 18px;
+    transition: all 0.25s ease;
+    background: #ffffff;
+}
+
+.card-produto:hover {
+    border-color: rgba(234, 29, 44, 0.2);
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.07);
+    transform: translateY(-2px);
+}
+
+/* Limitador de texto com reticências */
+.line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}

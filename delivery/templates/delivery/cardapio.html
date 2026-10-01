@@ -3,83 +3,87 @@
 {% block title %}Cardápio Digital | Burguer & Co.{% endblock %}
 
 {% block content %}
-<div class="container" style="max-width: 900px;">
+<div class="container" style="max-width: 960px;">
 
-    <!-- Banner Restaurante -->
-    <div class="card border-0 text-white rounded-4 shadow-sm mb-4 overflow-hidden" style="background: linear-gradient(135deg, #18181b 0%, #09090b 100%);">
+    <!-- Hero Banner do Restaurante -->
+    <div class="card border-0 text-white rounded-4 shadow-sm mb-4 overflow-hidden position-relative" style="background: radial-gradient(circle at 10% 20%, #2b2b36 0%, #111115 100%);">
         <div class="card-body p-4 p-md-5">
             <div class="d-flex flex-column flex-sm-row align-items-center gap-4 text-center text-sm-start">
-                <div class="bg-danger text-white rounded-4 d-flex align-items-center justify-content-center shadow-lg" style="width: 80px; height: 80px; font-size: 2.5rem; flex-shrink: 0;">
+                <div class="rounded-4 d-flex align-items-center justify-content-center shadow-lg bg-gradient" style="background: linear-gradient(135deg, #ea1d2c, #991b1b); width: 88px; height: 88px; font-size: 2.75rem; flex-shrink: 0;">
                     🍔
                 </div>
                 <div>
                     <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-sm-start gap-2 mb-2">
-                        <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-3 py-1">
-                            ● Aberto agora
+                        <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-3 py-1 font-monospace">
+                            ● Aberto Agora
                         </span>
-                        <span class="text-secondary small">Entrega: 30 - 45 min</span>
+                        <span class="text-light opacity-75 small">🕒 30 - 45 min • Entrega Própria</span>
                     </div>
-                    <h1 class="h2 fw-extrabold mb-1 tracking-tight">Burguer & Co. Delivery</h1>
-                    <p class="text-secondary small mb-0">Hambúrgueres grelhados no fogo, batatas crocantes e bebidas bem geladas.</p>
+                    <h1 class="h2 fw-extrabold mb-1 tracking-tight text-white">Burguer & Co. Delivery</h1>
+                    <p class="text-light opacity-75 small mb-0" style="max-width: 520px;">
+                        Receitas autorais preparadas no fogo com ingredientes frescos, pães selados na manteiga e queijo artesanal.
+                    </p>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Navegação Rápida de Categorias -->
+    <!-- Navegação de Categorias em Carrossel Horizontal -->
     <div class="d-flex gap-2 overflow-auto pb-2 mb-4" style="scrollbar-width: none;">
         {% for categoria in categorias %}
             {% if categoria.produtos.exists %}
-                <a href="#cat-{{ categoria.id }}" class="badge-pill-cat">
+                <a href="#cat-{{ categoria.id }}" class="badge-pill-cat shadow-sm">
                     {{ categoria.nome }}
                 </a>
             {% endif %}
         {% endfor %}
     </div>
 
-    <!-- Listagem por Categorias -->
+    <!-- Seções por Categoria -->
     {% for categoria in categorias %}
         {% if categoria.produtos.exists %}
-            <section id="cat-{{ categoria.id }}" class="mb-5" style="scroll-margin-top: 85px;">
+            <section id="cat-{{ categoria.id }}" class="mb-5" style="scroll-margin-top: 90px;">
                 <div class="d-flex align-items-center gap-2 pb-2 mb-3 border-bottom border-2 border-danger-subtle">
-                    <h3 class="h4 fw-bold mb-0 text-dark">{{ categoria.nome }}</h3>
-                    <span class="badge bg-dark rounded-pill">{{ categoria.produtos.count }}</span>
+                    <h2 class="h5 fw-bold mb-0 text-dark">{{ categoria.nome }}</h2>
+                    <span class="badge bg-light text-dark border rounded-pill">{{ categoria.produtos.count }}</span>
                 </div>
 
                 <div class="row g-3">
                     {% for produto in categoria.produtos.all %}
                         {% if produto.disponivel %}
                             <div class="col-12 col-md-6">
-                                <div class="card h-100 border-0 shadow-sm rounded-4 p-3 bg-white">
+                                <div class="card card-produto h-100 p-3">
                                     <div class="d-flex gap-3 align-items-center">
                                         
-                                        <!-- Imagem -->
-                                        <a href="{% url 'produto_detalhe' produto.id %}" class="flex-shrink-0">
+                                        <!-- Imagem com Proporção Perfeita -->
+                                        <a href="{% url 'produto_detalhe' produto.id %}" class="flex-shrink-0 text-decoration-none">
                                             {% if produto.imagem %}
-                                                <img src="{{ produto.imagem.url }}" class="rounded-3 object-fit-cover shadow-sm" style="width: 95px; height: 95px;" alt="{{ produto.nome }}">
+                                                <img src="{{ produto.imagem.url }}" class="rounded-3 object-fit-cover shadow-sm" style="width: 104px; height: 104px;" alt="{{ produto.nome }}">
                                             {% else %}
-                                                <div class="bg-light rounded-3 d-flex align-items-center justify-content-center text-muted border" style="width: 95px; height: 95px;">
-                                                    <span style="font-size: 1.5rem;">🍽️</span>
+                                                <div class="bg-light rounded-3 d-flex flex-column align-items-center justify-content-center text-muted border" style="width: 104px; height: 104px;">
+                                                    <span style="font-size: 1.6rem;">🍽️</span>
+                                                    <span style="font-size: 0.65rem;">Sem foto</span>
                                                 </div>
                                             {% endif %}
                                         </a>
 
-                                        <!-- Detalhes do Produto (com overflow-hidden para não vazar texto) -->
+                                        <!-- Informações do Item -->
                                         <div class="flex-grow-1 overflow-hidden">
-                                            <h5 class="fw-bold mb-1 fs-6 text-truncate">
-                                                <a href="{% url 'produto_detalhe' produto.id %}" class="text-decoration-none text-dark">
+                                            <h3 class="fw-bold mb-1 fs-6 text-truncate">
+                                                <a href="{% url 'produto_detalhe' produto.id %}" class="text-decoration-none text-dark hover-red">
                                                     {{ produto.nome }}
                                                 </a>
-                                            </h5>
+                                            </h3>
                                             
-                                            <!-- Descrição com quebra suave e limite de 2 linhas -->
-                                            <p class="text-muted small mb-2 line-clamp-2" style="font-size: 0.8rem; line-height: 1.35;">
-                                                {{ produto.descricao|default:"Sem descrição detalhada." }}
+                                            <!-- Descrição em 2 linhas sem overflow -->
+                                            <p class="text-muted small mb-3 line-clamp-2" style="font-size: 0.82rem; line-height: 1.35; min-height: 2.2rem;">
+                                                {{ produto.descricao|default:"Sem descrição adicional para este item." }}
                                             </p>
 
-                                            <div class="d-flex justify-content-between align-items-center pt-1 border-top border-light">
+                                            <!-- Preço + Ação -->
+                                            <div class="d-flex justify-content-between align-items-center pt-2 border-top border-light-subtle">
                                                 <span class="fw-extrabold fs-6 text-dark">R$ {{ produto.preco }}</span>
-                                                <a href="{% url 'adicionar_carrinho' produto.id %}" class="btn btn-sm btn-brand px-3 py-1">
+                                                <a href="{% url 'adicionar_carrinho' produto.id %}" class="btn btn-sm btn-brand px-3 py-1 text-nowrap">
                                                     + Pedir
                                                 </a>
                                             </div>
@@ -97,16 +101,16 @@
         <div class="card border-0 shadow-sm rounded-4 text-center p-5 bg-white">
             <span class="fs-1 d-block mb-2">📋</span>
             <h5 class="fw-bold">Nenhum produto disponível</h5>
-            <p class="text-muted small">O cardápio está sendo atualizado.</p>
+            <p class="text-muted small">O cardápio está a ser preparado para hoje.</p>
         </div>
     {% endfor %}
 
-    <!-- Barra Flutuante do Carrinho -->
+    <!-- Barra Flutuante de Fechar Pedido -->
     {% if carrinho|length > 0 %}
         <div class="fixed-bottom p-3 d-flex justify-content-center" style="z-index: 1050;">
-            <a href="{% url 'ver_carrinho' %}" class="btn btn-dark shadow-lg d-flex justify-content-between align-items-center px-4 py-3 rounded-pill text-decoration-none border border-secondary" style="min-width: 330px; max-width: 420px; width: 100%;">
+            <a href="{% url 'ver_carrinho' %}" class="btn shadow-lg d-flex justify-content-between align-items-center px-4 py-3 rounded-pill text-decoration-none border border-secondary" style="background: rgba(18, 18, 22, 0.95); backdrop-filter: blur(10px); min-width: 320px; max-width: 440px; width: 100%;">
                 <div class="d-flex align-items-center gap-2">
-                    <span class="badge bg-danger rounded-pill px-2 py-1">{{ carrinho|length }}</span>
+                    <span class="badge bg-danger rounded-pill px-2.5 py-1.5">{{ carrinho|length }}</span>
                     <span class="fw-bold small text-white">Ver meu pedido</span>
                 </div>
                 <span class="fw-bold text-white fs-6">R$ {{ carrinho.get_total_preco }} →</span>
