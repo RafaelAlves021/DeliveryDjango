@@ -41,7 +41,7 @@
                     </li>
                 </ul>
 
-                <!-- Gestão de Acesso / Admin -->
+                <!-- Gestão de Acesso / Sessão -->
                 <div class="d-flex align-items-center gap-2 mt-2 mt-lg-0">
                     {% if user.is_authenticated %}
                         <span class="text-light small me-2">Olá, <strong>{{ user.username }}</strong></span>
@@ -55,8 +55,11 @@
                             </button>
                         </form>
                     {% else %}
-                        <a href="{% url 'login' %}" class="btn btn-sm btn-outline-light rounded-pill px-3">
-                            🔐 Área Administrativa
+                        <a href="{% url 'cadastro' %}" class="btn btn-sm btn-outline-light rounded-pill px-3">
+                            Criar Conta
+                        </a>
+                        <a href="{% url 'login' %}" class="btn btn-sm btn-brand px-3">
+                            🔐 Entrar
                         </a>
                     {% endif %}
                 </div>

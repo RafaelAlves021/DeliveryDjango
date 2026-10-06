@@ -1,0 +1,57 @@
+{% extends 'delivery/base.html' %}
+
+{% block title %}Criar Conta | Burguer & Co.{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width: 480px;">
+    <div class="card border-0 shadow-sm rounded-4 p-4 p-md-5 bg-white my-4">
+        
+        <div class="text-center mb-4">
+            <span class="fs-1 d-block mb-2">🍔</span>
+            <h1 class="h4 fw-extrabold text-dark mb-1">Criar Conta</h1>
+            <p class="text-muted small">Registe-se para aceder ao sistema</p>
+        </div>
+
+        <form method="post" novalidate>
+            {% csrf_token %}
+
+            {% for field in form %}
+                <div class="mb-3">
+                    <label class="form-label fw-bold text-dark small" for="{{ field.id_for_label }}">
+                        {{ field.label }}
+                    </label>
+                    <input 
+                        type="{{ field.field.widget.input_type }}" 
+                        name="{{ field.name }}" 
+                        id="{{ field.id_for_label }}"
+                        class="form-control rounded-3 {% if field.errors %}is-invalid{% endif %}"
+                        required
+                    >
+                    {% if field.help_text %}
+                        <div class="form-text text-muted" style="font-size: 0.75rem;">
+                            {{ field.help_text|safe }}
+                        </div>
+                    {% endif %}
+                    {% for error in field.errors %}
+                        <div class="invalid-feedback d-block small">
+                            {{ error }}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+
+            <button type="submit" class="btn btn-brand w-100 py-3 fw-bold mt-3 shadow-sm">
+                Finalizar Registo
+            </button>
+        </form>
+
+        <div class="text-center mt-4 pt-3 border-top">
+            <span class="text-muted small">Já possui uma conta?</span>
+            <a href="{% url 'login' %}" class="fw-bold text-danger text-decoration-none small ms-1">
+                Entrar
+            </a>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

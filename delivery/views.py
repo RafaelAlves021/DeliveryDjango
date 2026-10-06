@@ -1,8 +1,14 @@
+import requests
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import login
+from django.contrib.auth.forms import UserCreationForm
 from .models import Categoria, Produto, Pedido, ItemPedido
 from .carrinho import Carrinho
 from .forms import CheckoutForm, ProdutoForm
+from django.contrib import messages
+from .forms import CadastroComEmailForm, CheckoutForm, ProdutoForm
+
 
 
 # -------------------------------------------------------------
@@ -113,9 +119,7 @@ def finalizar_pedido_view(request):
     if request.method == 'POST':
         form = CheckoutForm(request.POST)
         if form.is_valid():
-            pedido = form.save(commit=False)
-            pedido.forma_pagamento = 'dinheiro'
-            pedido.save()
+            pedido = form.save()
 
             for item in carrinho:
                 ItemPedido.objects.create(
@@ -141,3 +145,49 @@ def pedido_concluido_view(request, pedido_id):
     return render(request, 'delivery/pedido_concluido.html', {
         'pedido': pedido
     })
+
+
+# -------------------------------------------------------------
+# 5. AUTENTICAÇÃO E CADASTRO
+# -------------------------------------------------------------
+def cadastro(request):
+    # Se o usuário já estiver logado, redireciona direto para o cardápio
+    if request.user.is_authenticated:
+        return redirect('cardapio')
+
+    if request.method == 'POST':
+        form = CadastroComEmailForm(request.POST)
+        
+        if form.is_valid():
+            # 1. Salva o usuário no banco de dados
+            user = form.save()
+            
+            # --- INTEGRAÇÃO EMAILJS ---
+            emailjs_url = 'https://api.emailjs.com/api/v1.0/email/send'
+            
+            payload = {
+                'service_id': 'service_ronjmrm',
+                'template_id': 'template_6rl1y0p',
+                'user_id': 'VmfhGJBIJtBhqnVDe',
+                'accessToken': 'Wuw3qe-53Bimd6dveQN3L',
+                'template_params': {
+                    'nome_usuario': user.username,
+                    'email_destino': user.email
+                }
+            }
+            
+            try:
+                resposta = requests.post(emailjs_url, json=payload)
+                if resposta.status_code != 200:
+                    print(f"Erro EmailJS: {resposta.text}")
+            except Exception as e:
+                print(f"Erro de conexão com EmailJS: {e}")
+            # --------------------------
+
+            # 2. Faz o login automático e redireciona para o cardápio
+            login(request, user)
+            return redirect('cardapio')
+    else:
+        form = CadastroComEmailForm()
+
+    return render(request, 'delivery/registration/cadastro.html', {'form': form})
