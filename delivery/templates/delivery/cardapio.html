@@ -1,115 +1,166 @@
 {% extends 'delivery/base.html' %}
 
-{% block title %}Cardápio Digital | Burguer & Co.{% endblock %}
+{% block title %}Cardápio | {{ restaurante.nome }}{% endblock %}
 
 {% block content %}
-<div class="container" style="max-width: 900px;">
+<div class="container" style="max-width: 1040px;">
 
-    <!-- Banner Restaurante -->
-    <div class="card border-0 text-white rounded-4 shadow-sm mb-4 overflow-hidden" style="background: linear-gradient(135deg, #18181b 0%, #09090b 100%);">
-        <div class="card-body p-4 p-md-5">
-            <div class="d-flex flex-column flex-sm-row align-items-center gap-4 text-center text-sm-start">
-                <div class="bg-danger text-white rounded-4 d-flex align-items-center justify-content-center shadow-lg" style="width: 80px; height: 80px; font-size: 2.5rem; flex-shrink: 0;">
-                    🍔
-                </div>
+    <!-- Banner do Restaurante Limpo e Comercial -->
+    <div class="card border-0 shadow-sm rounded-4 mb-4 bg-white overflow-hidden">
+        <div class="p-4 p-md-4">
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3">
+                
+                <!-- Informações Principais da Loja -->
                 <div>
-                    <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-sm-start gap-2 mb-2">
-                        <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-3 py-1">
-                            ● Aberto agora
-                        </span>
-                        <span class="text-secondary small">Entrega: 30 - 45 min</span>
+                    <div class="d-flex flex-wrap align-items-center gap-2 mb-2">
+                        {% if restaurante.esta_aberto %}
+                            <span class="badge bg-success-subtle text-success border border-success-subtle fw-semibold rounded-pill px-3 py-1 d-inline-flex align-items-center gap-1" style="font-size: 0.75rem;">
+                                <span style="font-size: 7px;">🟢</span> Aberto agora
+                            </span>
+                        {% else %}
+                            <span class="badge bg-danger-subtle text-danger border border-danger-subtle fw-semibold rounded-pill px-3 py-1 d-inline-flex align-items-center gap-1" style="font-size: 0.75rem;">
+                                <span style="font-size: 7px;">🔴</span> Fechado
+                            </span>
+                        {% endif %}
+
+                        <span class="text-secondary small">⏱️ {{ restaurante.tempo_estimado }} • {{ restaurante.area_entrega }}</span>
                     </div>
-                    <h1 class="h2 fw-extrabold mb-1 tracking-tight">Burguer & Co. Delivery</h1>
-                    <p class="text-secondary small mb-0">Hambúrgueres grelhados no fogo, batatas crocantes e bebidas bem geladas.</p>
+
+                    <h1 class="h3 fw-bold text-dark mb-2 tracking-tight">{{ restaurante.nome }}</h1>
+                    
+                    <div class="d-flex flex-wrap align-items-center gap-2 mt-2">
+                        {% if restaurante.endereco %}
+                            <span class="text-muted small">📍 {{ restaurante.endereco }}</span>
+                        {% endif %}
+                        
+                        {% if restaurante.whatsapp %}
+                            {% if restaurante.endereco %}<span class="text-muted small">•</span>{% endif %}
+                            <a href="https://wa.me/55{{ restaurante.whatsapp }}?text=Ol%C3%A1!%20Gostaria%20de%20tirar%20uma%20d%C3%BAvida%20sobre%20o%20card%C3%A1pio." 
+                               target="_blank" 
+                               class="btn btn-sm text-success border border-success-subtle bg-success-subtle rounded-pill px-3 py-1 fw-semibold text-decoration-none d-inline-flex align-items-center gap-2"
+                               style="font-size: 0.78rem;">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
+                                    <path d="M13.601 2.326A7.85 7.85 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.9 7.9 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.9 7.9 0 0 0 13.6 2.326zM7.994 14.521a6.6 6.6 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.56 6.56 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592m3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.016-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.73.73 0 0 0-.529.247c-.182.198-.691.677-.691 1.654s.707 1.916.81 2.049c.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232"/>
+                                </svg>
+                                WhatsApp
+                            </a>
+                        {% endif %}
+                    </div>
                 </div>
+
+                <!-- Painel de Ações Rápidas (À Direita) -->
+                <div class="d-flex align-items-center gap-3">
+                    {% if user.is_authenticated and restaurante.dono == user %}
+                        <form method="post" action="{% url 'alternar_status_loja' restaurante.slug %}" class="m-0">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-sm {% if restaurante.aberto_manual %}btn-outline-danger{% else %}btn-success{% endif %} rounded-pill px-3 py-1 fw-semibold shadow-sm" style="font-size: 0.8rem;">
+                                {% if restaurante.aberto_manual %}
+                                    ⏸ Pausar Pedidos
+                                {% else %}
+                                    ▶ Abrir Loja
+                                {% endif %}
+                            </button>
+                        </form>
+                    {% endif %}
+
+                    {% if restaurante.logo %}
+                        <img src="{{ restaurante.logo.url }}" alt="{{ restaurante.nome }}" class="rounded-circle object-fit-cover shadow-sm border" style="width: 72px; height: 72px;">
+                    {% endif %}
+                </div>
+
             </div>
         </div>
     </div>
 
-    <!-- Navegação Rápida de Categorias -->
-    <div class="d-flex gap-2 overflow-auto pb-2 mb-4" style="scrollbar-width: none;">
-        {% for categoria in categorias %}
-            {% if categoria.produtos.exists %}
+    <!-- Pílulas de Navegação de Categorias -->
+    {% if categorias %}
+        <div class="category-pills-wrapper mb-4">
+            {% for categoria in categorias %}
                 <a href="#cat-{{ categoria.id }}" class="badge-pill-cat">
                     {{ categoria.nome }}
                 </a>
-            {% endif %}
-        {% endfor %}
-    </div>
+            {% endfor %}
+        </div>
+    {% endif %}
 
-    <!-- Listagem por Categorias -->
+    <!-- Listagem de Seções por Categoria -->
     {% for categoria in categorias %}
-        {% if categoria.produtos.exists %}
-            <section id="cat-{{ categoria.id }}" class="mb-5" style="scroll-margin-top: 85px;">
-                <div class="d-flex align-items-center gap-2 pb-2 mb-3 border-bottom border-2 border-danger-subtle">
-                    <h3 class="h4 fw-bold mb-0 text-dark">{{ categoria.nome }}</h3>
-                    <span class="badge bg-dark rounded-pill">{{ categoria.produtos.count }}</span>
-                </div>
+        <div class="mb-5" id="cat-{{ categoria.id }}">
+            <div class="d-flex align-items-center gap-2 mb-3">
+                <h2 class="h5 fw-extrabold text-dark mb-0">{{ categoria.nome }}</h2>
+                <span class="badge bg-light text-muted border rounded-pill">{{ categoria.produtos.count }}</span>
+            </div>
 
-                <div class="row g-3">
-                    {% for produto in categoria.produtos.all %}
-                        {% if produto.disponivel %}
-                            <div class="col-12 col-md-6">
-                                <div class="card h-100 border-0 shadow-sm rounded-4 p-3 bg-white">
-                                    <div class="d-flex gap-3 align-items-center">
+            <div class="row g-3">
+                {% for produto in categoria.produtos.all %}
+                    {% if produto.disponivel %}
+                        <div class="col-12 col-md-6">
+                            <div class="product-card h-100 p-3 bg-white rounded-4 border shadow-sm d-flex justify-content-between align-items-center gap-3">
+                                
+                                <!-- Detalhes do Produto (À Esquerda) -->
+                                <div class="flex-grow-1 min-w-0 pe-2">
+                                    <a href="{% url 'produto_detalhe' restaurante.slug produto.id %}" class="text-decoration-none text-dark">
+                                        <h3 class="h6 fw-bold mb-1 text-truncate">{{ produto.nome }}</h3>
+                                    </a>
+                                    <p class="text-muted small mb-3 line-clamp-2" style="font-size: 0.82rem; line-height: 1.4;">
+                                        {{ produto.descricao }}
+                                    </p>
+                                    <div class="d-flex align-items-center justify-content-between pt-1">
+                                        <span class="fw-extrabold text-dark fs-6">R$ {{ produto.preco }}</span>
                                         
-                                        <!-- Imagem -->
-                                        <a href="{% url 'produto_detalhe' produto.id %}" class="flex-shrink-0">
-                                            {% if produto.imagem %}
-                                                <img src="{{ produto.imagem.url }}" class="rounded-3 object-fit-cover shadow-sm" style="width: 95px; height: 95px;" alt="{{ produto.nome }}">
-                                            {% else %}
-                                                <div class="bg-light rounded-3 d-flex align-items-center justify-content-center text-muted border" style="width: 95px; height: 95px;">
-                                                    <span style="font-size: 1.5rem;">🍽️</span>
-                                                </div>
-                                            {% endif %}
-                                        </a>
-
-                                        <!-- Detalhes do Produto (com overflow-hidden para não vazar texto) -->
-                                        <div class="flex-grow-1 overflow-hidden">
-                                            <h5 class="fw-bold mb-1 fs-6 text-truncate">
-                                                <a href="{% url 'produto_detalhe' produto.id %}" class="text-decoration-none text-dark">
-                                                    {{ produto.nome }}
-                                                </a>
-                                            </h5>
-                                            
-                                            <!-- Descrição com quebra suave e limite de 2 linhas -->
-                                            <p class="text-muted small mb-2 line-clamp-2" style="font-size: 0.8rem; line-height: 1.35;">
-                                                {{ produto.descricao|default:"Sem descrição detalhada." }}
-                                            </p>
-
-                                            <div class="d-flex justify-content-between align-items-center pt-1 border-top border-light">
-                                                <span class="fw-extrabold fs-6 text-dark">R$ {{ produto.preco }}</span>
-                                                <a href="{% url 'adicionar_carrinho' produto.id %}" class="btn btn-sm btn-brand px-3 py-1">
-                                                    + Pedir
-                                                </a>
-                                            </div>
-                                        </div>
-
+                                        {% if restaurante.esta_aberto %}
+                                            <a href="{% url 'adicionar_carrinho' restaurante.slug produto.id %}" class="btn btn-sm btn-brand px-3 py-1 rounded-pill" style="font-size: 0.8rem;">
+                                                + Adicionar
+                                            </a>
+                                        {% else %}
+                                            <button class="btn btn-sm btn-light border text-muted px-3 py-1 rounded-pill" style="font-size: 0.8rem;" disabled>
+                                                Fechado
+                                            </button>
+                                        {% endif %}
                                     </div>
                                 </div>
+
+                                <!-- Foto do Produto (À Direita) -->
+                                <a href="{% url 'produto_detalhe' restaurante.slug produto.id %}" class="flex-shrink-0 text-decoration-none">
+                                    {% if produto.imagem %}
+                                        <img src="{{ produto.imagem.url }}" class="rounded-3 shadow-sm object-fit-cover" style="width: 100px; height: 100px;" alt="{{ produto.nome }}">
+                                    {% else %}
+                                        <div class="rounded-3 bg-light border d-flex align-items-center justify-content-center text-muted" style="width: 100px; height: 100px; font-size: 1.8rem;">
+                                            🍔
+                                        </div>
+                                    {% endif %}
+                                </a>
+
                             </div>
-                        {% endif %}
-                    {% endfor %}
-                </div>
-            </section>
-        {% endif %}
+                        </div>
+                    {% endif %}
+                {% empty %}
+                    <div class="col-12">
+                        <p class="text-muted small ps-2 fst-italic">Nenhum produto cadastrado nesta categoria.</p>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
     {% empty %}
         <div class="card border-0 shadow-sm rounded-4 text-center p-5 bg-white">
-            <span class="fs-1 d-block mb-2">📋</span>
-            <h5 class="fw-bold">Nenhum produto disponível</h5>
-            <p class="text-muted small">O cardápio está sendo atualizado.</p>
+            <span class="fs-1 d-block mb-2">🍽️</span>
+            <h4 class="fw-bold mb-1">Nenhum item cadastrado</h4>
+            <p class="text-muted small">Adicione categorias e produtos no painel ou botão acima para montar o seu cardápio.</p>
         </div>
     {% endfor %}
 
-    <!-- Barra Flutuante do Carrinho -->
+    <!-- Barra Flutuante de Checkout -->
     {% if carrinho|length > 0 %}
-        <div class="fixed-bottom p-3 d-flex justify-content-center" style="z-index: 1050;">
-            <a href="{% url 'ver_carrinho' %}" class="btn btn-dark shadow-lg d-flex justify-content-between align-items-center px-4 py-3 rounded-pill text-decoration-none border border-secondary" style="min-width: 330px; max-width: 420px; width: 100%;">
+        <div class="cart-floating-bar">
+            <a href="{% url 'ver_carrinho' restaurante.slug %}" class="cart-floating-btn">
                 <div class="d-flex align-items-center gap-2">
-                    <span class="badge bg-danger rounded-pill px-2 py-1">{{ carrinho|length }}</span>
-                    <span class="fw-bold small text-white">Ver meu pedido</span>
+                    <span class="badge bg-danger rounded-pill px-2 py-1 fs-6">{{ carrinho|length }}</span>
+                    <span class="fw-bold">Ver pedido</span>
                 </div>
-                <span class="fw-bold text-white fs-6">R$ {{ carrinho.get_total_preco }} →</span>
+                <div class="d-flex align-items-center gap-2">
+                    <span class="fw-extrabold fs-5">R$ {{ carrinho.get_total_preco }}</span>
+                    <span class="fs-5">→</span>
+                </div>
             </a>
         </div>
     {% endif %}

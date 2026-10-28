@@ -117,6 +117,11 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
+# Garante que o Django encontra a pasta static da aplicação delivery
+STATICFILES_DIRS = [
+    BASE_DIR / 'delivery' / 'static',
+]
+
 
 # Email
 # https://docs.djangoproject.com/en/6.1/topics/email/#topic-email-configuration

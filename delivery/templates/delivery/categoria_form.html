@@ -1,0 +1,49 @@
+{% extends 'delivery/base.html' %}
+
+{% block title %}Nova Categoria | {{ restaurante.nome }}{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width: 550px;">
+
+    <!-- Cabeçalho -->
+    <div class="d-flex align-items-center justify-content-between mb-4 pb-2 border-bottom border-2 border-danger-subtle">
+        <div class="d-flex align-items-center gap-2">
+            <span class="fs-4">🏷️</span>
+            <h1 class="h4 fw-extrabold mb-0 text-dark">Nova Categoria</h1>
+        </div>
+        <a href="{% url 'produto_criar' restaurante.slug %}" class="btn btn-sm btn-outline-secondary rounded-pill px-3">
+            ← Voltar
+        </a>
+    </div>
+
+    <!-- Formulário -->
+    <div class="card border-0 shadow-sm rounded-4 p-4 p-md-5 bg-white mb-5">
+        <form method="post">
+            {% csrf_token %}
+
+            <div class="row g-3">
+                <div class="col-12">
+                    <label class="form-label fw-bold text-dark small" for="{{ form.nome.id_for_label }}">Nome da Categoria</label>
+                    {{ form.nome }}
+                    {% if form.nome.errors %}
+                        <div class="text-danger small mt-1">{{ form.nome.errors }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="col-12">
+                    <label class="form-label fw-bold text-dark small" for="{{ form.ordem.id_for_label }}">Ordem de Exibição no Cardápio</label>
+                    {{ form.ordem }}
+                    {% if form.ordem.errors %}
+                        <div class="text-danger small mt-1">{{ form.ordem.errors }}</div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-brand w-100 py-3 fw-bold fs-6 shadow-sm mt-4">
+                Criar Categoria
+            </button>
+        </form>
+    </div>
+
+</div>
+{% endblock %}

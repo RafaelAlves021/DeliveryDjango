@@ -1,0 +1,237 @@
+:root {
+    --brand-primary: #e11d48;
+    --brand-primary-hover: #be123c;
+    --brand-gradient: linear-gradient(135deg, #e11d48 0%, #fb7185 100%);
+    --bg-main: #f8fafc;
+    --surface-card: #ffffff;
+    --text-main: #0f172a;
+    --text-muted: #64748b;
+    --border-soft: #f1f5f9;
+    --shadow-soft: 0 4px 20px -2px rgba(15, 23, 42, 0.05);
+    --shadow-hover: 0 12px 28px -4px rgba(15, 23, 42, 0.12);
+}
+
+body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background-color: var(--bg-main);
+    color: var(--text-main);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    -webkit-font-smoothing: antialiased;
+}
+
+main {
+    flex: 1;
+}
+
+/* Navbar Moderna com Efeito de Vidro */
+.navbar-custom {
+    background-color: rgba(15, 23, 42, 0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.brand-badge-logo {
+    width: 40px;
+    height: 40px;
+    background: var(--brand-gradient);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(225, 29, 72, 0.35);
+}
+
+/* Botões Customizados */
+.btn-brand {
+    background: var(--brand-gradient);
+    color: #ffffff !important;
+    border: none;
+    border-radius: 12px;
+    font-weight: 700;
+    padding: 0.65rem 1.4rem;
+    box-shadow: 0 4px 14px rgba(225, 29, 72, 0.25);
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-brand:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(225, 29, 72, 0.35);
+    filter: brightness(1.05);
+}
+
+.btn-brand:active {
+    transform: scale(0.98);
+}
+
+/* Cartão do Restaurante (Banner) */
+.restaurant-hero-card {
+    background: #ffffff;
+    border: 1px solid rgba(226, 232, 240, 0.8);
+    border-radius: 24px;
+    box-shadow: var(--shadow-soft);
+    position: relative;
+    overflow: hidden;
+}
+
+.restaurant-hero-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 6px;
+    background: var(--brand-gradient);
+}
+
+/* Pílulas de Categoria estilo Aplicativo */
+.category-pills-wrapper {
+    display: flex;
+    gap: 0.5rem;
+    overflow-x: auto;
+    padding-bottom: 0.5rem;
+    scrollbar-width: none;
+}
+
+.category-pills-wrapper::-webkit-scrollbar {
+    display: none;
+}
+
+.badge-pill-cat {
+    background-color: #ffffff;
+    color: var(--text-main);
+    border: 1px solid #e2e8f0;
+    border-radius: 9999px;
+    padding: 0.55rem 1.25rem;
+    font-size: 0.875rem;
+    font-weight: 700;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: all 0.2s ease;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+}
+
+.badge-pill-cat:hover, .badge-pill-cat.active {
+    background-color: var(--text-main);
+    color: #ffffff;
+    border-color: var(--text-main);
+    transform: translateY(-1px);
+}
+
+/* Cartões de Produtos */
+.product-card {
+    background: #ffffff;
+    border: 1px solid rgba(226, 232, 240, 0.7);
+    border-radius: 16px;
+    padding: 1rem 1.25rem;
+    transition: all 0.25s ease;
+    box-shadow: var(--shadow-soft);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+}
+
+.product-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-hover);
+    border-color: #cbd5e1;
+}
+
+.product-img {
+    width: 105px !important;
+    height: 105px !important;
+    border-radius: 14px;
+    object-fit: cover;
+    flex-shrink: 0;
+    order: 2; /* Move a foto para o lado direito */
+}
+
+.product-placeholder {
+    width: 105px !important;
+    height: 105px !important;
+    border-radius: 14px;
+    background: #f1f5f9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    flex-shrink: 0;
+    order: 2; /* Move o placeholder para o lado direito */
+}
+
+/* Botão Flutuante do Carrinho */
+.cart-floating-bar {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    max-width: 480px;
+    z-index: 1050;
+    animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+    from { transform: translate(-50%, 40px); opacity: 0; }
+    to { transform: translate(-50%, 0); opacity: 1; }
+}
+
+.cart-floating-btn {
+    background: var(--text-main);
+    color: #ffffff;
+    border-radius: 18px;
+    padding: 1rem 1.4rem;
+    box-shadow: 0 10px 30px rgba(15, 23, 42, 0.25);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.cart-floating-btn:hover {
+    background: #000000;
+    color: #ffffff;
+    transform: scale(1.02);
+}
+
+/* Utilitários de Texto */
+.line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Botão Comercial de WhatsApp */
+.btn-whatsapp-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    background-color: #f0fdf4;
+    color: #16a34a !important;
+    border: 1px solid #bbf7d0;
+    padding: 5px 12px;
+    border-radius: 9999px;
+    font-size: 0.82rem;
+    font-weight: 700;
+    text-decoration: none;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+    transition: all 0.2s ease-in-out;
+}
+
+.btn-whatsapp-pill:hover {
+    background-color: #22c55e;
+    color: #ffffff !important;
+    border-color: #22c55e;
+    box-shadow: 0 4px 10px rgba(34, 197, 94, 0.25);
+    transform: translateY(-1px);
+}
+
+.btn-whatsapp-pill svg {
+    flex-shrink: 0;
+}

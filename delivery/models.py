@@ -1,6 +1,54 @@
 from django.db import models
+from django.contrib.auth.models import User
+from django.utils.text import slugify
+
+
+class Restaurante(models.Model):
+    dono = models.ForeignKey(User, on_delete=models.CASCADE, related_name="restaurantes")
+    nome = models.CharField(max_length=150)
+    slug = models.SlugField(max_length=150, unique=True, help_text="Identificador único na URL (ex: burguer-co)")
+    whatsapp = models.CharField(max_length=20, help_text="WhatsApp do restaurante com DDD (ex: 5511999999999)")
+    endereco = models.CharField(max_length=255, blank=True, help_text="Endereço físico do estabelecimento")
+    logo = models.ImageField(upload_to="restaurantes/logos/", blank=True, null=True)
+    ativo = models.BooleanField(default=True, help_text="Define se o cardápio está visível para clientes")
+    criado_em = models.DateTimeField(auto_now_add=True)
+
+    # Campos comerciais dinâmicos (liga/desliga e estimativas)
+    aberto_manual = models.BooleanField(
+        default=True, 
+        verbose_name="Recebendo Pedidos Agora"
+    )
+    tempo_estimado = models.CharField(
+        max_length=50, 
+        default="30-50 min", 
+        verbose_name="Tempo Estimado de Entrega"
+    )
+    area_entrega = models.CharField(
+        max_length=120, 
+        default="Entrega para toda a região", 
+        verbose_name="Texto de Entrega/Frete"
+    )
+
+    class Meta:
+        verbose_name = "Restaurante"
+        verbose_name_plural = "Restaurantes"
+        ordering = ['nome']
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.nome)
+        super().save(*args, **kwargs)
+
+    @property
+    def esta_aberto(self):
+        return self.aberto_manual and self.ativo
+
+    def __str__(self):
+        return self.nome
+
 
 class Categoria(models.Model):
+    restaurante = models.ForeignKey(Restaurante, on_delete=models.CASCADE, related_name="categorias")
     nome = models.CharField(max_length=100)
     ordem = models.PositiveIntegerField(default=0, help_text="Ordem de exibição no cardápio")
 
@@ -9,10 +57,11 @@ class Categoria(models.Model):
         ordering = ['ordem', 'nome']
 
     def __str__(self):
-        return self.nome
+        return f"{self.nome} ({self.restaurante.nome})"
 
 
 class Produto(models.Model):
+    restaurante = models.ForeignKey(Restaurante, on_delete=models.CASCADE, related_name="produtos")
     categoria = models.ForeignKey(Categoria, on_delete=models.CASCADE, related_name="produtos")
     nome = models.CharField(max_length=150)
     descricao = models.TextField(blank=True, help_text="Ingredientes e detalhes")
@@ -24,7 +73,7 @@ class Produto(models.Model):
         verbose_name_plural = "Produtos"
 
     def __str__(self):
-        return self.nome
+        return f"{self.nome} - {self.restaurante.nome}"
 
 
 class Pedido(models.Model):
@@ -42,6 +91,7 @@ class Pedido(models.Model):
         ('PIX', 'Pix na Entrega'),
     ]
 
+    restaurante = models.ForeignKey(Restaurante, on_delete=models.CASCADE, related_name="pedidos")
     cliente_nome = models.CharField(max_length=100)
     cliente_telefone = models.CharField(max_length=20, help_text="WhatsApp do cliente")
     endereco_entrega = models.TextField(help_text="Rua, número, bairro e complemento")
@@ -60,7 +110,7 @@ class Pedido(models.Model):
         verbose_name_plural = "Pedidos"
 
     def __str__(self):
-        return f"Pedido #{self.id} - {self.cliente_nome}"
+        return f"Pedido #{self.id} - {self.restaurante.nome} ({self.cliente_nome})"
 
     @property
     def total(self):

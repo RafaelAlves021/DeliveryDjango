@@ -1,65 +1,186 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ titulo }} | Gerenciador</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <style>body { font-family: 'Plus Jakarta Sans', sans-serif; }</style>
-</head>
-<body class="bg-zinc-100 text-zinc-900 min-h-screen pb-20 antialiased">
+{% extends 'delivery/base.html' %}
 
-    <header class="bg-zinc-950 text-white border-b border-zinc-800">
-        <div class="max-w-2xl mx-auto px-5 py-4 flex items-center justify-between">
-            <h1 class="text-base font-bold tracking-tight">{{ titulo }}</h1>
-            <a href="{% url 'cardapio' %}" class="text-xs font-semibold bg-zinc-800 hover:bg-zinc-700 text-zinc-200 px-3.5 py-2 rounded-xl transition">
-                ← Voltar
-            </a>
+{% block title %}{{ titulo }} | {{ restaurante.nome }}{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width: 650px;">
+
+    <!-- Cabeçalho -->
+    <div class="d-flex align-items-center justify-content-between mb-4 pb-2 border-bottom border-2 border-danger-subtle">
+        <div class="d-flex align-items-center gap-2">
+            <span class="fs-4">🍔</span>
+            <h1 class="h4 fw-extrabold mb-0 text-dark">{{ titulo }}</h1>
         </div>
-    </header>
+        <a href="{% url 'cardapio' restaurante.slug %}" class="btn btn-sm btn-outline-secondary rounded-pill px-3">
+            ← Voltar ao cardápio
+        </a>
+    </div>
 
-    <main class="max-w-2xl mx-auto px-4 mt-6">
-        <div class="bg-white rounded-3xl border border-zinc-200/80 shadow-sm p-6 md:p-8">
-            <form method="post" enctype="multipart/form-data" class="space-y-4">
-                {% csrf_token %}
+    <!-- Formulário do Produto -->
+    <div class="card border-0 shadow-sm rounded-4 p-4 p-md-5 bg-white mb-5">
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
 
-                <div>
-                    <label class="block text-xs font-bold uppercase text-zinc-600 mb-1">Categoria</label>
+            <div class="row g-3">
+                <!-- Campo Categoria com Gatilho do Modal -->
+                <div class="col-12">
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <label class="form-label fw-bold text-dark small mb-0" for="{{ form.categoria.id_for_label }}">Categoria</label>
+                        <button type="button" class="btn btn-link text-danger p-0 small fw-bold text-decoration-none" data-bs-toggle="modal" data-bs-target="#modalNovaCategoria">
+                            + Nova Categoria
+                        </button>
+                    </div>
                     {{ form.categoria }}
+                    {% if form.categoria.errors %}
+                        <div class="text-danger small mt-1">{{ form.categoria.errors }}</div>
+                    {% endif %}
                 </div>
 
-                <div>
-                    <label class="block text-xs font-bold uppercase text-zinc-600 mb-1">Nome do Produto</label>
+                <!-- Nome -->
+                <div class="col-12">
+                    <label class="form-label fw-bold text-dark small" for="{{ form.nome.id_for_label }}">Nome do Produto</label>
                     {{ form.nome }}
+                    {% if form.nome.errors %}
+                        <div class="text-danger small mt-1">{{ form.nome.errors }}</div>
+                    {% endif %}
                 </div>
 
-                <div>
-                    <label class="block text-xs font-bold uppercase text-zinc-600 mb-1">Descrição</label>
+                <!-- Descrição -->
+                <div class="col-12">
+                    <label class="form-label fw-bold text-dark small" for="{{ form.descricao.id_for_label }}">Descrição / Ingredientes</label>
                     {{ form.descricao }}
+                    {% if form.descricao.errors %}
+                        <div class="text-danger small mt-1">{{ form.descricao.errors }}</div>
+                    {% endif %}
                 </div>
 
-                <div>
-                    <label class="block text-xs font-bold uppercase text-zinc-600 mb-1">Preço (R$)</label>
+                <!-- Preço -->
+                <div class="col-md-6">
+                    <label class="form-label fw-bold text-dark small" for="{{ form.preco.id_for_label }}">Preço (R$)</label>
                     {{ form.preco }}
+                    {% if form.preco.errors %}
+                        <div class="text-danger small mt-1">{{ form.preco.errors }}</div>
+                    {% endif %}
                 </div>
 
-                <div>
-                    <label class="block text-xs font-bold uppercase text-zinc-600 mb-1">Foto do Produto</label>
+                <!-- Imagem -->
+                <div class="col-md-6">
+                    <label class="form-label fw-bold text-dark small" for="{{ form.imagem.id_for_label }}">Foto do Produto</label>
                     {{ form.imagem }}
+                    {% if form.imagem.errors %}
+                        <div class="text-danger small mt-1">{{ form.imagem.errors }}</div>
+                    {% endif %}
                 </div>
 
-                <div class="flex items-center gap-2 pt-2">
-                    {{ form.disponivel }}
-                    <label class="text-sm font-semibold text-zinc-700">Produto disponível para venda</label>
+                <!-- Status de Disponibilidade -->
+                <div class="col-12 mt-3">
+                    <div class="form-check form-switch">
+                        {{ form.disponivel }}
+                        <label class="form-check-label fw-semibold text-dark small" for="{{ form.disponivel.id_for_label }}">
+                            Disponível para venda imediata
+                        </label>
+                    </div>
                 </div>
+            </div>
 
-                <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3.5 px-4 rounded-2xl shadow transition text-sm md:text-base mt-4">
-                    Salvar Produto
-                </button>
-            </form>
+            <button type="submit" class="btn btn-brand w-100 py-3 fw-bold fs-6 shadow-sm mt-4">
+                Salvar Produto
+            </button>
+        </form>
+    </div>
+
+</div>
+
+<!-- Modal para Adicionar Categoria Rápida -->
+<div class="modal fade" id="modalNovaCategoria" tabindex="-1" aria-labelledby="modalNovaCategoriaLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content rounded-4 border-0 p-3 shadow">
+      <div class="modal-header border-0 pb-0">
+        <h5 class="modal-title fw-bold text-dark" id="modalNovaCategoriaLabel">Criar Nova Categoria</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-3">
+            <label class="form-label small fw-semibold text-muted" for="inputNomeCategoria">Nome da Categoria</label>
+            <input type="text" id="inputNomeCategoria" class="form-control rounded-3" placeholder="Ex: Bebidas, Sobremesas, Acompanhamentos">
         </div>
-    </main>
+        <div class="mb-2">
+            <label class="form-label small fw-semibold text-muted" for="inputOrdemCategoria">Ordem de Exibição (Opcional)</label>
+            <input type="number" id="inputOrdemCategoria" class="form-control rounded-3" placeholder="Ex: 1" value="0">
+        </div>
+        <div id="erroCategoria" class="text-danger small mt-2 d-none"></div>
+      </div>
+      <div class="modal-footer border-0 pt-0">
+        <button type="button" class="btn btn-light rounded-pill px-3" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-brand rounded-pill px-4" id="btnSalvarCategoria" onclick="salvarCategoriaRapida()">Salvar</button>
+      </div>
+    </div>
+  </div>
+</div>
 
-</body>
-</html>
+<script>
+function salvarCategoriaRapida() {
+    const nomeInput = document.getElementById('inputNomeCategoria');
+    const ordemInput = document.getElementById('inputOrdemCategoria');
+    const erroDiv = document.getElementById('erroCategoria');
+    const btnSalvar = document.getElementById('btnSalvarCategoria');
+    
+    const nome = nomeInput.value.trim();
+    const ordem = ordemInput.value ? parseInt(ordemInput.value) : 0;
+
+    if (!nome) {
+        erroDiv.textContent = 'Por favor, informe o nome da categoria.';
+        erroDiv.classList.remove('d-none');
+        nomeInput.focus();
+        return;
+    }
+
+    btnSalvar.disabled = true;
+    btnSalvar.innerText = 'Salvando...';
+
+    fetch("{% url 'api_categoria_criar' restaurante.slug %}", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": "{{ csrf_token }}"
+        },
+        body: JSON.stringify({ 
+            nome: nome,
+            ordem: ordem
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        btnSalvar.disabled = false;
+        btnSalvar.innerText = 'Salvar';
+
+        if (data.sucesso) {
+            const selectCategoria = document.getElementById('{{ form.categoria.id_for_label }}');
+            
+            // Cria a nova option e já seleciona
+            const novaOpcao = new Option(data.nome, data.id, true, true);
+            selectCategoria.add(novaOpcao);
+            
+            // Fecha o modal
+            const modalEl = document.getElementById('modalNovaCategoria');
+            const modalInstance = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+            modalInstance.hide();
+
+            // Limpa campos
+            nomeInput.value = '';
+            ordemInput.value = '0';
+            erroDiv.classList.add('d-none');
+        } else {
+            erroDiv.textContent = data.erro || 'Erro ao cadastrar categoria.';
+            erroDiv.classList.remove('d-none');
+        }
+    })
+    .catch(() => {
+        btnSalvar.disabled = false;
+        btnSalvar.innerText = 'Salvar';
+        erroDiv.textContent = 'Falha na conexão com o servidor. Tente novamente.';
+        erroDiv.classList.remove('d-none');
+    });
+}
+</script>
+{% endblock %}
